@@ -15,11 +15,18 @@
     - name: "create user"
       user:
         name: "{{APP_NAME}}"
+    - name: "change permissions"
+      file:
+        owner: "{{APP_NAME}}"
+        group: "{{APP_NAME}}"
+        recurse: yes
+        path: "/opt/{{APP_NAME}}"
     - name: "create venv"
       pip:
         requirements: "/opt/{{APP_NAME}}/requirements.txt"
-        virtualenv: "/opt/{{APP_NAME}/.venv"
-        virtualenv_python: "python3"
+        virtualenv: "/opt/{{APP_NAME}}/.venv"
+        virtualenv_command: "python3 -m venv"
+      become_user: "{{APP_NAME}}"
     - name: "put systemd cfg"
       template:
         src: files/flaskapp.service
